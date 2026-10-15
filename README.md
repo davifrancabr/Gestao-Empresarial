@@ -2,9 +2,6 @@
 
 Sistema web para gerenciar o estoque de mercados e redes de supermercados: centraliza informações de produtos, registra entradas e saídas, emite alertas de reposição e simula a demanda futura com base no histórico de vendas.
 
-> Projeto acadêmico da disciplina de **Engenharia de Software** — Centro Universitário Afya Maceió (UNIMA/Afya).
-> Orientador: **Prof. Me. Ícaro Santos Ferreira**
-
 ---
 
 ## Sumário
