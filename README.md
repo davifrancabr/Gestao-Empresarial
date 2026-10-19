@@ -79,17 +79,9 @@ Desenvolver um sistema de gestão e controle de estoque que centralize as inform
 | -------------- | ---------------------------------------------------- |
 | Banco de dados | PostgreSQL                                           |
 | Frontend       | HTML5, CSS3, Bootstrap, JavaScript                   |
-| Backend        | **Python** _ou_ **Java** (em definição — ver abaixo) |
+| Backend        | Java |
 | Ferramentas    | Git, VS Code                                         |
 
-### Backend: opções em avaliação
-
-|                    | Python                                                                                                        | Java                                                          |
-| ------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Framework sugerido | FastAPI ou Flask (ou Django)                                                                                  | Spring Boot                                                   |
-| Pontos fortes      | Desenvolvimento rápido, ótimo ecossistema para análise de dados (pandas, statsmodels) na simulação de demanda | Tipagem forte, ecossistema corporativo maduro, bom desempenho |
-| Pontos de atenção  | Menos rigidez de tipos; exige disciplina na organização                                                       | Mais código e configuração; curva de aprendizado maior        |
-| Acesso ao banco    | SQLAlchemy + psycopg                                                                                          | Spring Data JPA + driver PostgreSQL                           |
 
 ## Arquitetura
 
@@ -98,7 +90,7 @@ Arquitetura em camadas, com frontend e backend desacoplados e comunicação via 
 ```
 ┌──────────────────────┐      HTTP / JSON      ┌─────────────────────────┐      SQL      ┌──────────────┐
 │  Frontend            │ ────────────────────▶ │  Backend (API REST)     │ ────────────▶ │  PostgreSQL  │
-│  HTML + CSS +        │ ◀──────────────────── │  Python ou Java         │ ◀──────────── │              │
+│  HTML + CSS +        │ ◀──────────────────── │   Java                  │ ◀──────────── │              │
 │  Bootstrap + JS      │                       │  Controllers / Services │               │              │
 └──────────────────────┘                       │  Repositórios           │               └──────────────┘
                                                └─────────────────────────┘
@@ -110,7 +102,7 @@ Camadas do backend: **rotas/controllers** → **serviços** (regras de negócio:
 
 ```
 .
-├── backend/              # API (Python ou Java)
+├── backend/              # API
 ├── frontend/
 │   ├── index.html
 │   ├── pages/            # dashboard, produtos, estoque, clientes, vendas
@@ -170,7 +162,7 @@ CREATE TABLE movimentacoes_estoque (
 ### Pré-requisitos
 
 - PostgreSQL 15+
-- Python 3.11+ **ou** JDK 21+ com Maven/Gradle
+- JDK 21+ com Maven
 
 ### 1. Clonar o repositório
 
@@ -188,17 +180,6 @@ psql -U postgres -d estoque -f database/seed.sql   # opcional
 ```
 
 ### 3. Backend
-
-**Opção A: Python**
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env             # configurar credenciais do banco
-uvicorn app.main:app --reload    # exemplo com FastAPI
-```
 
 **Opção B: Java (Spring Boot)**
 
