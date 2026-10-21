@@ -209,7 +209,7 @@ DB_PORT=5432
 DB_NAME=estoque
 DB_USER=postgres
 DB_PASSWORD=sua_senha
-API_PORT=8000
+API_PORT=8001
 ```
 
 ## Roadmap
