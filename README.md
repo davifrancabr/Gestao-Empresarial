@@ -79,7 +79,7 @@ Desenvolver um sistema de gestão e controle de estoque que centralize as inform
 | -------------- | ---------------------------------------------------- |
 | Banco de dados | PostgreSQL                                           |
 | Frontend       | HTML5, CSS3, Bootstrap, JavaScript                   |
-| Backend        | Java |
+| Backend        | Java                                                 |
 | Ferramentas    | Git, VS Code                                         |
 
 
@@ -122,14 +122,11 @@ Proposta inicial, a ser refinada conforme o desenvolvimento. Já considera uma *
 
 | Tabela                   | Finalidade                                                               |
 | ------------------------ | ------------------------------------------------------------------------ |
-| `lojas`                  | Unidades da rede                                                         |
-| `usuarios`               | Acesso ao sistema e perfis (administrador, gerente, operador)            |
-| `categorias`             | Classificação dos produtos                                               |
-| `fornecedores`           | Origem das mercadorias                                                   |
+| `usuarios`               | Acesso ao sistema e perfis (gerente, cliente)                            |
+| `fornecedores` *         | Origem das mercadorias                                                   |
 | `produtos`               | Cadastro de produtos (código de barras, preço, estoque mínimo, validade) |
 | `estoque`                | Quantidade atual por produto e por loja                                  |
 | `movimentacoes_estoque`  | Entradas, saídas, ajustes e perdas                                       |
-| `clientes`               | Dados básicos e apoio à fidelização                                      |
 | `vendas` / `itens_venda` | Histórico de compras e base para a simulação de demanda                  |
 
 Exemplo (trecho):
@@ -161,7 +158,7 @@ CREATE TABLE movimentacoes_estoque (
 
 ### Pré-requisitos
 
-- PostgreSQL 15+
+- * PostgreSQL 15+ 
 - JDK 21+ com Maven
 
 ### 1. Clonar o repositório
