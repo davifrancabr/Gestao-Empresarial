@@ -1,3 +1,4 @@
+--- Vestimentas ---
 Sandalia
 Blusa
 Short
@@ -5,3 +6,36 @@ Calça
 Bermuda
 Polo
 Acessorio
+
+--- Higiene ---
+Shampoo
+Condicionador
+Sabonete
+Escova de Dente
+Pasta de Dente
+
+--- Alimentação e Bebida ---
+Biscoito
+Arroz
+Feijão
+Macarrão
+Peixe
+Carne
+Frango
+Refrigerante
+Suco
+Bebidas Alcolicas
+Água
+
+--- Limpeza ---
+Detergente
+Amaciante
+Sabão
+Água Sanitaria
+
+--- Eletronicos ---
+Celular
+Televisão
+Computador
+Video Game
+Som

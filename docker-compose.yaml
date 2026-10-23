@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: database-gestao
+    environment:
+      POSTGRES_DB: Gestao_Empresarial
+      POSTGRES_USER: gestao_empresarial
+      POSTGRES_PASSWORD: gestao_Empresarial
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
