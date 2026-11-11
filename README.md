@@ -102,18 +102,20 @@ Camadas do backend: **rotas/controllers** → **serviços** (regras de negócio:
 
 ```
 .
-├── backend/              # API
-├── frontend/
-│   ├── index.html
-│   ├── pages/            # dashboard, produtos, estoque, clientes, vendas
-│   ├── css/
-│   ├── js/
-│   └── assets/
-├── database/
-│   ├── schema.sql        # criação das tabelas
-│   └── seed.sql          # dados de exemplo
-├── docs/                 # relatório (ABNT), slides, diagramas
-└── README.md
+├── docs/ # relatório (ABNT), slides, diagramas
+└── apps/
+    ├── backend/              # API
+    ├── frontend/
+    │   ├── index.html
+    │   ├── pages/            # dashboard, produtos, estoque, clientes, vendas
+    │   ├── css/
+    │   ├── js/
+    │   └── assets/
+    ├── database/
+    │   ├── schema.sql        # criação das tabelas
+    │   └── seed.sql          # dados de exemplo
+    ├── docs/                 # relatório (ABNT), slides, diagramas
+    └── README.md
 ```
 
 ## Modelo de dados inicial
