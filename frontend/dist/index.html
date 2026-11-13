@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14251f" />
+    <meta name="color-scheme" content="light" />
+    <title>Gestão Empresarial</title>
+    <meta name="description" content="Sistema de gestão empresarial para controlar estoque, movimentações, clientes, vendas e relatórios por loja.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="/favicon.svg">
+    <meta property="og:title" content="Gestão Empresarial">
+    <meta property="og:description" content="Sistema de gestão empresarial para controlar estoque, movimentações, clientes, vendas e relatórios por loja.">
+    <script type="module" crossorigin src="/assets/index-Czc1MWtS.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-EkPPLIoo.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
+
+    <svg class="svg-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-package" viewBox="0 0 24 24">
+        <path d="m4 7 8-4 8 4-8 4-8-4Zm0 0v10l8 4 8-4V7M12 11v10" />
+      </symbol>
+      <symbol id="icon-dashboard" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18" />
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="icon-down" viewBox="0 0 24 24">
+        <path d="M12 5v14m0 0-5-5m5 5 5-5" />
+      </symbol>
+      <symbol id="icon-up" viewBox="0 0 24 24">
+        <path d="M12 19V5m0 0-5 5m5-5 5 5" />
+      </symbol>
+      <symbol id="icon-movements" viewBox="0 0 24 24">
+        <path d="M4 8h15m0 0-4-4m4 4-4 4M20 16H5m0 0 4-4m-4 4 4 4" />
+      </symbol>
+      <symbol id="icon-layers" viewBox="0 0 24 24">
+        <path d="m12 3 9 5-9 5-9-5 9-5Zm9 9-9 5-9-5m18 4-9 5-9-5" />
+      </symbol>
+      <symbol id="icon-sales" viewBox="0 0 24 24">
+        <path d="M6 3h12a1 1 0 0 1 1 1v17l-3-2-2 2-2-2-2 2-2-2-3 2V4a1 1 0 0 1 1-1Z" />
+        <path d="M9 8h6M9 12h6" />
+      </symbol>
+      <symbol id="icon-customers" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3.2" />
+        <path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14.4a5.5 5.5 0 0 1 3 5.6" />
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3.2" />
+        <path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14.4a5.5 5.5 0 0 1 3 5.6" />
+      </symbol>
+      <symbol id="icon-reports" viewBox="0 0 24 24">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+      </symbol>
+      <symbol id="icon-settings" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3.2" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.7 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.7a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.3 9c.24.6.82 1.02 1.47 1.03H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z" />
+      </symbol>
+      <symbol id="icon-store" viewBox="0 0 24 24">
+        <path d="M4 9h16v11H4V9Zm-1-4h18l1 4H2l1-4Zm6 15v-6h6v6" />
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24">
+        <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5Z" />
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24">
+        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6m5 4v6m4-6v6" />
+      </symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24">
+        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+        <circle cx="12" cy="12" r="3" />
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="M12 3 2.5 20h19L12 3Z" />
+        <path d="M12 9v5m0 3v.01" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5 12 4.5 4.5L19 7" />
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path d="M20 11a8 8 0 1 0-2.3 6.7M20 4v7h-7" />
+      </symbol>
+      <symbol id="icon-sliders" viewBox="0 0 24 24">
+        <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2" />
+        <circle cx="16" cy="6" r="2" />
+        <circle cx="10" cy="12" r="2" />
+        <circle cx="16" cy="18" r="2" />
+      </symbol>
+      <symbol id="icon-history" viewBox="0 0 24 24">
+        <path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16" />
+      </symbol>
+      <symbol id="icon-logout" viewBox="0 0 24 24">
+        <path d="M10 4H5v16h5M14 8l4 4-4 4m4-4H9" />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m16.5 16.5 4.5 4.5" />
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M8 3v4m8-4v4M3 10h18" />
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="4" y="10" width="16" height="11" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </symbol>
+    </svg>
+
+    <div id="boot-screen" class="boot-screen" role="status" aria-live="polite">
+      <div class="boot-mark" aria-hidden="true">
+        <svg><use href="#icon-package"></use></svg>
+      </div>
+      <p class="boot-title">Gestão Empresarial</p>
+      <span class="spinner" aria-hidden="true"></span>
+      <p class="boot-caption">Verificando sua sessão…</p>
+    </div>
+
+    <section id="login-view" class="login-view" aria-labelledby="login-title" hidden>
+      <div class="login-card">
+        <div class="login-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg><use href="#icon-package"></use></svg>
+          </span>
+          <span>Gestão Empresarial</span>
+        </div>
+        <p class="section-kicker">Acesso restrito</p>
+        <h1 id="login-title">Entrar no sistema</h1>
+        <p class="login-description">
+          Informe suas credenciais para acessar o estoque, vendas e relatórios da
+          sua loja.
+        </p>
+
+        <form id="login-form" class="login-form" novalidate>
+          <div class="form-field">
+            <label for="login-email">E-mail</label>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              inputmode="email"
+              maxlength="160"
+              placeholder="voce@empresa.com.br"
+              required
+            />
+          </div>
+          <div class="form-field">
+            <label for="login-password">Senha</label>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              maxlength="100"
+              placeholder="Sua senha"
+              required
+            />
+          </div>
+          <p
+            id="login-error"
+            class="form-error-banner"
+            role="alert"
+            aria-live="assertive"
+            hidden
+          ></p>
+          <button
+            id="login-submit"
+            class="button button-primary button-full"
+            type="submit"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <p class="login-demo">
+          <strong>Ambiente de demonstração:</strong> admin@gestao.local ·
+          senha gestao123
+        </p>
+      </div>
+    </section>
+
+    <div id="app-shell" class="app-shell" hidden>
+      <aside id="sidebar" class="sidebar" aria-label="Menu principal">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg><use href="#icon-package"></use></svg>
+          </div>
+          <span>Gestão Empresarial</span>
+        </div>
+        <button
+          class="close-menu icon-button"
+          id="close-menu"
+          type="button"
+          aria-label="Fechar menu"
+        >
+          <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+        </button>
+        <nav aria-label="Navegação principal">
+          <ul class="nav-list">
+            <li>
+              <a class="nav-item" data-route="dashboard" href="#/dashboard">
+                <svg aria-hidden="true"><use href="#icon-dashboard"></use></svg>
+                <span>Painel</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="produtos" href="#/produtos">
+                <svg aria-hidden="true"><use href="#icon-package"></use></svg>
+                <span>Produtos</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="estoque" href="#/estoque">
+                <svg aria-hidden="true"><use href="#icon-layers"></use></svg>
+                <span>Estoque</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="movimentacoes" href="#/movimentacoes">
+                <svg aria-hidden="true"><use href="#icon-movements"></use></svg>
+                <span>Movimentações</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="clientes" href="#/clientes">
+                <svg aria-hidden="true"><use href="#icon-customers"></use></svg>
+                <span>Clientes</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="vendas" href="#/vendas">
+                <svg aria-hidden="true"><use href="#icon-sales"></use></svg>
+                <span>Vendas</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="relatorios" href="#/relatorios">
+                <svg aria-hidden="true"><use href="#icon-reports"></use></svg>
+                <span>Relatórios</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-item" data-route="configuracoes" href="#/configuracoes">
+                <svg aria-hidden="true"><use href="#icon-settings"></use></svg>
+                <span>Configurações</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <p class="sidebar-caption">Controle simples, decisões melhores.</p>
+      </aside>
+
+      <button
+        class="menu-backdrop"
+        id="menu-backdrop"
+        type="button"
+        aria-label="Fechar menu"
+        hidden
+      ></button>
+
+      <main id="main-content" class="main-content" tabindex="-1">
+        <header class="topbar">
+          <button
+            class="open-menu icon-button"
+            id="open-menu"
+            type="button"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            <svg aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+
+          <div class="topbar-title">
+            <p class="eyebrow" id="page-eyebrow">Visão geral</p>
+            <h1 id="page-title" tabindex="-1">Painel</h1>
+          </div>
+
+          <div class="topbar-actions">
+            <div class="store">
+              <span class="store-dot" aria-hidden="true"></span>
+              <label class="sr-only" for="store-select">Loja ativa</label>
+              <select id="store-select" class="store-select"></select>
+              <span class="user-chip">
+                <span class="avatar" id="user-initials" aria-hidden="true">—</span>
+                <span class="user-copy">
+                  <strong id="user-name">—</strong>
+                  <small id="user-role">—</small>
+                </span>
+              </span>
+            </div>
+            <button
+              id="logout-button"
+              class="button button-secondary button-small logout-button"
+              type="button"
+            >
+              <svg aria-hidden="true"><use href="#icon-logout"></use></svg>
+              <span>Sair</span>
+            </button>
+          </div>
+        </header>
+
+        <div id="view" class="view"></div>
+      </main>
+    </div>
+
+    <div
+      id="toast-region"
+      class="toast-region"
+      aria-live="polite"
+      aria-atomic="false"
+    ></div>
+    <div
+      id="alert-region"
+      class="alert-region"
+      aria-live="assertive"
+      aria-atomic="true"
+    ></div>
+    <div id="modal-root"></div>
+
+  </body>
+</html>
