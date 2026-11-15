@@ -7,6 +7,9 @@ target/
 
 node_modules
 
+.env*
+!.env.example
+
 ### STS ###
 .apt_generated
 .classpath

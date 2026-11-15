@@ -16,7 +16,7 @@ mais persistência de produtos ou movimentações em `localStorage`.
 | Camada          | Tecnologias                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | Backend         | Java 21, Spring Boot 3.4, Spring Web, Data JPA/Hibernate, Security, Validation, Flyway, PostgreSQL 16, springdoc OpenAPI |
-| Testes backend  | JUnit 5, Mockito, Spring Boot Test, Testcontainers (com alternativa por banco externo)                                   |
+| Testes backend  | JUnit 5, Mockito, Spring Boot Test, Testcontainers, ArchUnit                                                             |
 | Frontend        | HTML5, CSS puro, JavaScript ES Modules, Vite 8, pnpm                                                                     |
 | Testes frontend | Vitest + jsdom                                                                                                           |
 
@@ -26,18 +26,22 @@ mais persistência de produtos ou movimentações em `localStorage`.
 .
 ├── backend/
 │   ├── src/main/java/com/empresa/gestao/
-│   │   ├── auth/          login, sessão, CSRF
-│   │   ├── product/       cadastro, edição e arquivamento
-│   │   ├── stock/         saldos e movimentações
+│   │   ├── GestaoApplication.java
+│   │   ├── shared/        kernel: exceções, paginação, utilitários e portas comuns
+│   │   ├── auth/          login, sessão e CSRF
+│   │   ├── user/          usuários, perfis e vínculos com lojas
+│   │   ├── store/         lojas e resolução de acesso
+│   │   ├── product/       cadastro, arquivamento e regra de saldo
+│   │   ├── movement/      entradas, saídas, ajustes e histórico auditável
 │   │   ├── customer/      clientes e histórico de compras
 │   │   ├── sale/          vendas com baixa transacional
+│   │   ├── stock/         visão consolidada de estoque e indicadores
 │   │   ├── dashboard/     indicadores e tendências
 │   │   ├── report/        relatórios paginados
-│   │   ├── user/          usuários, perfis e vínculos com lojas
-│   │   ├── store/         lojas
-│   │   └── common/        DTOs de página, exceções e utilitários
+│   │   ├── security/      adaptador de autenticação (Spring Security)
+│   │   └── bootstrap/     SecurityConfig, OpenAPI e carga de demonstração
 │   ├── src/main/resources/db/migration/  Flyway (V1-V3)
-│   └── src/test/java/     testes unitários e de integração
+│   └── src/test/java/     testes unitários, de integração e de arquitetura
 ├── frontend/
 │   ├── index.html         shell acessível, login e sprite de ícones
 │   ├── src/app.js         bootstrap, sessão, rotas e menu mobile
@@ -48,6 +52,13 @@ mais persistência de produtos ou movimentações em `localStorage`.
 ├── docker-compose.yml     PostgreSQL
 ├── .env.example           variáveis do banco e da API
 ```
+
+Cada módulo de negócio do backend segue a Clean Architecture em quatro camadas:
+`domain/` (modelos e portas de repositório em Java puro), `application/`
+(casos de uso, DTOs e portas para outros módulos), `infrastructure/`
+(persistência JPA e adaptadores) e `presentation/` (controllers e DTOs HTTP). As
+dependências apontam sempre para dentro e são verificadas por
+`ArchitectureTest` com ArchUnit.
 
 ## Pré-requisitos
 
@@ -134,6 +145,20 @@ Em produção:
 pnpm build     # gera frontend/dist
 pnpm preview   # serve a build
 ```
+
+### 4. Problemas comuns
+
+| Mensagem                                                        | Causa                                                                 | Correção                                                                 |
+| --------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `Connection to localhost:5433 refused`                          | PostgreSQL parado ou container removido                               | `docker compose up -d` e confirme com `docker compose ps`                |
+| `Connection to localhost:5432 refused` ao subir o backend       | Padrão de `DB_URL` usa a porta 5432, mas o Compose expõe a 5433        | Defina `DB_URL=jdbc:postgresql://localhost:5433/gestao` antes de iniciar |
+| Frontend sem dados e erro de rede no console                    | API não está rodando em `http://localhost:8080`                       | Suba o backend (seção 2); o padrão do frontend já aponta para essa URL   |
+| `E-mail ou senha inválidos` para as credenciais de demonstração | Banco recriado sem `DemoDataSeeder`, ou `APP_SEED_DEMO=false`         | Reinicie o backend com `APP_SEED_DEMO=true` sobre um banco vazio         |
+
+O backend mantém o pool de conexões ativo: se o PostgreSQL cair e voltar na
+mesma porta, as requisições seguintes se reconectam sem reiniciar a API. Se o
+container for recriado com o volume `gestao-postgres-data`, os dados continuam
+preservados.
 
 ## Credenciais de demonstração
 
