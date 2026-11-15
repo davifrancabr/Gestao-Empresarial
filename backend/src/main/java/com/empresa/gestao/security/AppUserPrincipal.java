@@ -1,7 +1,7 @@
 package com.empresa.gestao.security;
 
-import com.empresa.gestao.store.dto.StoreSummary;
-import com.empresa.gestao.user.Role;
+import com.empresa.gestao.shared.domain.model.Role;
+import com.empresa.gestao.store.application.dto.StoreSummary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

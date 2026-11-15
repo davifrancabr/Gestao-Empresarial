@@ -1,6 +1,6 @@
 package com.empresa.gestao.security;
 
-import com.empresa.gestao.common.exception.ApiError;
+import com.empresa.gestao.shared.presentation.web.ApiError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
