@@ -1,7 +1,8 @@
 # Gestão Empresarial
 
-Sistema de gestão com controle de estoque, movimentações auditáveis, clientes,
-vendas e relatórios. O projeto é dividido em dois processos independentes:
+Sistema web multi-loja para cadastro de produtos e clientes, controle de estoque,
+movimentações auditáveis, vendas, indicadores e relatórios (com exportação CSV
+pela interface). O projeto é dividido em dois processos independentes:
 
 - **`backend/`** — API Java 21 com Spring Boot, Spring Security, JPA/Hibernate,
   Flyway e PostgreSQL.
@@ -15,10 +16,10 @@ mais persistência de produtos ou movimentações em `localStorage`.
 
 | Camada          | Tecnologias                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Backend         | Java 21, Spring Boot 3.4, Spring Web, Data JPA/Hibernate, Security, Validation, Flyway, PostgreSQL 16, springdoc OpenAPI |
-| Testes backend  | JUnit 5, Mockito, Spring Boot Test, Testcontainers, ArchUnit                                                             |
-| Frontend        | HTML5, CSS puro, JavaScript ES Modules, Vite 8, pnpm                                                                     |
-| Testes frontend | Vitest + jsdom                                                                                                           |
+| Backend         | Java 21, Spring Boot 3.4.1, Spring Web, Data JPA/Hibernate, Security, Validation, Flyway, PostgreSQL 16, springdoc OpenAPI |
+| Testes backend  | JUnit 5, Mockito, Spring Boot Test, Testcontainers, ArchUnit                                                               |
+| Frontend        | HTML5, CSS puro, JavaScript ES Modules, Vite 8, pnpm                                                                       |
+| Testes frontend | Vitest + jsdom, TypeScript (verificação de configuração)                                                                    |
 
 ## Estrutura
 
@@ -27,30 +28,32 @@ mais persistência de produtos ou movimentações em `localStorage`.
 ├── backend/
 │   ├── src/main/java/com/empresa/gestao/
 │   │   ├── GestaoApplication.java
-│   │   ├── shared/        kernel: exceções, paginação, utilitários e portas comuns
-│   │   ├── auth/          login, sessão e CSRF
-│   │   ├── user/          usuários, perfis e vínculos com lojas
-│   │   ├── store/         lojas e resolução de acesso
-│   │   ├── product/       cadastro, arquivamento e regra de saldo
-│   │   ├── movement/      entradas, saídas, ajustes e histórico auditável
-│   │   ├── customer/      clientes e histórico de compras
-│   │   ├── sale/          vendas com baixa transacional
-│   │   ├── stock/         visão consolidada de estoque e indicadores
-│   │   ├── dashboard/     indicadores e tendências
-│   │   ├── report/        relatórios paginados
-│   │   ├── security/      adaptador de autenticação (Spring Security)
-│   │   └── bootstrap/     SecurityConfig, OpenAPI e carga de demonstração
-│   ├── src/main/resources/db/migration/  Flyway (V1-V3)
-│   └── src/test/java/     testes unitários, de integração e de arquitetura
+│   │   ├── shared/        # kernel: exceções, paginação, utilitários e portas comuns
+│   │   ├── auth/          # login, sessão e CSRF
+│   │   ├── user/          # usuários, perfis e vínculos com lojas
+│   │   ├── store/         # lojas e resolução de acesso
+│   │   ├── product/       # cadastro, arquivamento e regra de saldo
+│   │   ├── movement/      # entradas, saídas, ajustes e histórico auditável
+│   │   ├── customer/      # clientes e histórico de compras
+│   │   ├── sale/          # vendas com baixa transacional
+│   │   ├── stock/         # visão consolidada de estoque e indicadores
+│   │   ├── dashboard/     # indicadores e tendências
+│   │   ├── report/        # relatórios paginados
+│   │   ├── security/      # adaptador de autenticação (Spring Security)
+│   │   └── bootstrap/     # SecurityConfig, OpenAPI e carga de demonstração
+│   ├── src/main/resources/db/migration/  # Flyway (V1-V3)
+│   └── src/test/java/     # testes unitários, de integração e de arquitetura
 ├── frontend/
-│   ├── index.html         shell acessível, login e sprite de ícones
-│   ├── src/app.js         bootstrap, sessão, rotas e menu mobile
-│   ├── src/services/      cliente HTTP central (api.js)
-│   ├── src/modules/       painel, produtos, estoque, movimentações, etc.
-│   ├── src/components/    modais, notificações, paginação e estados
-│   └── src/utils/         DOM seguro, formatadores e validações
-├── docker-compose.yml     PostgreSQL
-├── .env.example           variáveis do banco e da API
+│   ├── index.html         # shell acessível, login e sprite de ícones
+│   ├── src/app.js         # bootstrap, sessão, rotas e menu mobile
+│   ├── src/context.js     # estado compartilhado e seleção de loja
+│   ├── src/services/      # cliente HTTP central (api.js)
+│   ├── src/modules/       # painel, produtos, estoque, movimentações, etc.
+│   ├── src/components/    # modais, notificações, paginação e estados
+│   └── src/utils/         # DOM seguro, formatadores e validações
+├── docs/                  # documentos acadêmicos
+├── docker-compose.yml     # PostgreSQL
+├── .env.example           # variáveis do banco e da API
 ```
 
 Cada módulo de negócio do backend segue a Clean Architecture em quatro camadas:
@@ -58,36 +61,70 @@ Cada módulo de negócio do backend segue a Clean Architecture em quatro camadas
 (casos de uso, DTOs e portas para outros módulos), `infrastructure/`
 (persistência JPA e adaptadores) e `presentation/` (controllers e DTOs HTTP). As
 dependências apontam sempre para dentro e são verificadas por
-`ArchitectureTest` com ArchUnit.
+`ArchitectureTest` com ArchUnit. Para detalhes das decisões arquiteturais,
+consulte [`docs/REFATORACAO_CLEANARCHITECTURE.md`](docs/REFATORACAO_CLEANARCHITECTURE.md).
+
+## Funcionalidades implementadas
+
+- **Painel:** indicadores de estoque, histórico recente, tendência de movimentações
+  e listas de produtos com estoque baixo ou zerado.
+- **Produtos e estoque:** cadastro, edição, arquivamento, saldo por loja, entrada,
+  saída, ajuste de inventário e histórico auditável.
+- **Clientes e vendas:** gestão de clientes, consulta de compras e registro de
+  vendas com baixa transacional do estoque.
+- **Relatórios:** produtos, estoque, movimentações e vendas, além de produtos
+  com maior movimentação e baixo giro. A interface exporta CSV da **página
+  atualmente carregada**, não de todos os resultados paginados.
+- **Acesso:** autenticação por sessão, perfis ADMIN/GERENTE/OPERADOR e autorização
+  por loja aplicada no backend.
 
 ## Pré-requisitos
 
-- Java 21+
-- Node.js 20.19+ e pnpm
-- Docker (recomendado para o PostgreSQL)
+- **JDK 21** (ou versão posterior compatível com o projeto);
+- o Maven Wrapper
+  (`backend/mvnw` ou `mvnw.cmd`) baixa o Maven na primeira execução, se necessário.
+- **Node.js 20.19+** (ou versão recente compatível com Vite 8) e **pnpm**.
+- **Docker com Compose** (recomendado para iniciar o PostgreSQL) **ou** uma
+  instância PostgreSQL 16 acessível por JDBC.
 
 ## Como executar
 
 ### 1. PostgreSQL
 
+A partir da **raiz do repositório**:
+
 ```bash
 docker compose up -d
+docker compose ps
 ```
 
 O Compose cria o banco `gestao` e expõe o PostgreSQL em
 `localhost:5433` (porta configurável por `POSTGRES_PORT`). O volume
-`gestao-postgres-data` preserva os dados entre reinícios.
+`gestao-postgres-data` preserva os dados entre reinícios. Se quiser
+personalizar as credenciais ou portas do Compose, copie **na raiz**
+`.env.example` para `.env` e edite `POSTGRES_DB`, `POSTGRES_USER`,
+`POSTGRES_PASSWORD` e `POSTGRES_PORT` **antes** de iniciar o contêiner.
 
-Para criar também o banco usado pelos testes de integração:
+O `.env` na raiz é lido pelo **Docker Compose**, mas **não é carregado
+automaticamente pelo Spring Boot**: as variáveis `DB_*` devem ser fornecidas
+na sessão do terminal, pela IDE ou pelo ambiente de execução da API.
+
+Para usar um PostgreSQL local nos testes de integração, crie um banco
+**separado** (com os valores padrão do Compose):
 
 ```bash
-docker exec -it gestao-postgres createdb -U gestao gestao_test
+docker exec gestao-postgres createdb -U gestao gestao_test
 ```
+
+Esse banco de testes é dispensável quando o Testcontainers consegue iniciar
+seu próprio PostgreSQL. **Nunca use um banco com dados reais para testes.**
 
 ### 2. Backend
 
-O backend lê as variáveis de ambiente do processo. Use os valores de
-`.env.example` como referência.
+O backend lê as variáveis de ambiente do **processo**. Use os valores de
+`.env.example` como referência e ajuste `DB_URL`, `DB_USERNAME` e `DB_PASSWORD`
+se tiver personalizado o Compose. Execute os comandos a seguir **a partir da
+raiz do repositório**, em um novo terminal:
 
 **PowerShell (Windows):**
 
@@ -109,6 +146,10 @@ DB_PASSWORD=gestao \
 ./mvnw spring-boot:run
 ```
 
+No Linux/macOS, caso o Maven Wrapper não tenha permissão de execução após
+extrair o ZIP, rode `chmod +x backend/mvnw` a partir da raiz do repositório
+antes de iniciá-lo.
+
 A API sobe em `http://localhost:8080`. O Flyway aplica as migrações
 automaticamente na inicialização e o Hibernate apenas valida o schema
 (`ddl-auto=validate`).
@@ -121,30 +162,51 @@ ambiente definidas, pois o padrão de `DB_URL` usa a porta 5432):
 java -jar target/gestao-1.0.0.jar
 ```
 
-Documentação OpenAPI:
+Documentação OpenAPI (com o backend iniciado):
 
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 - JSON: `http://localhost:8080/v3/api-docs`
 
 ### 3. Frontend
 
+Em **outro terminal**, a partir da raiz do repositório:
+
+**Bash/Linux/macOS:**
+
 ```bash
 cd frontend
+cp .env.example .env
 pnpm install
-cp .env.example .env       # Windows: Copy-Item .env.example .env
+pnpm dev
+```
+
+**PowerShell (Windows):**
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
+pnpm install
 pnpm dev
 ```
 
 O Vite inicia em `http://localhost:8443` (ou na porta definida em `PORT`).
-Configure `VITE_API_BASE_URL` em `frontend/.env` se a API estiver em outro
-endereço.
+A variável `VITE_API_BASE_URL` em `frontend/.env` deve apontar para a **API
+Java**, incluindo `/api/v1` (padrão: `http://localhost:8080/api/v1`). Se mudar
+a origem do frontend, inclua a nova origem em `APP_CORS_ALLOWED_ORIGINS` no
+backend. Use o mesmo host (`localhost` ou `127.0.0.1`) na navegação e na API
+para evitar problemas de cookies de sessão no desenvolvimento.
 
-Em produção:
+Para gerar e visualizar a compilação de produção, execute os comandos abaixo
+com o servidor de desenvolvimento parado (o `preview` também usa a porta 8443
+por padrão):
 
 ```bash
 pnpm build     # gera frontend/dist
-pnpm preview   # serve a build
+pnpm preview   # serve a compilação localmente
 ```
+
+**Atenção:** `pnpm preview` apenas serve arquivos estáticos para validação;
+não implanta nem inicia o backend.
 
 ### 4. Problemas comuns
 
@@ -153,7 +215,9 @@ pnpm preview   # serve a build
 | `Connection to localhost:5433 refused`                          | PostgreSQL parado ou container removido                               | `docker compose up -d` e confirme com `docker compose ps`                |
 | `Connection to localhost:5432 refused` ao subir o backend       | Padrão de `DB_URL` usa a porta 5432, mas o Compose expõe a 5433        | Defina `DB_URL=jdbc:postgresql://localhost:5433/gestao` antes de iniciar |
 | Frontend sem dados e erro de rede no console                    | API não está rodando em `http://localhost:8080`                       | Suba o backend (seção 2); o padrão do frontend já aponta para essa URL   |
-| `E-mail ou senha inválidos` para as credenciais de demonstração | Banco recriado sem `DemoDataSeeder`, ou `APP_SEED_DEMO=false`         | Reinicie o backend com `APP_SEED_DEMO=true` sobre um banco vazio         |
+| `E-mail ou senha inválidos` para as credenciais de demonstração | `APP_SEED_DEMO=false`, `APP_SEED_PASSWORD` diferente ou usuários já existentes | Confira a configuração e consulte os usuários; o seed só atua quando não há usuários |
+| Erro de CORS ou cookie/sessão não persistido                    | Frontend mudou de host/porta sem atualizar CORS ou hosts incompatíveis | Ajuste `APP_CORS_ALLOWED_ORIGINS`, reinicie a API e mantenha os hosts consistentes |
+| Testes de integração não foram executados                      | Sem Docker e sem `GESTAO_TEST_DB_URL`/`-Dtest.db.url`                   | Configure um banco de testes isolado ou habilite o Docker               |
 
 O backend mantém o pool de conexões ativo: se o PostgreSQL cair e voltar na
 mesma porta, as requisições seguintes se reconectam sem reiniciar a API. Se o
@@ -162,7 +226,8 @@ preservados.
 
 ## Credenciais de demonstração
 
-Criadas por `DemoDataSeeder` quando `APP_SEED_DEMO=true`:
+Criadas por `DemoDataSeeder` quando `APP_SEED_DEMO=true` **e a tabela de
+usuários está vazia**:
 
 | E-mail                  | Perfil   | Lojas           |
 | ----------------------- | -------- | --------------- |
@@ -170,10 +235,14 @@ Criadas por `DemoDataSeeder` quando `APP_SEED_DEMO=true`:
 | `gerente@gestao.local`  | GERENTE  | Loja 1 - Matriz |
 | `operador@gestao.local` | OPERADOR | Loja 1 - Matriz |
 
-Senha padrão: `gestao123` (configurável por `APP_SEED_PASSWORD`).
+Senha padrão: `gestao123` (configurável por `APP_SEED_PASSWORD` **antes da
+primeira carga**). Alterar essa variável após a criação dos usuários não altera
+suas senhas persistidas.
 
-> Em produção, defina `APP_SEED_DEMO=false`, troque a senha e configure
-> `APP_COOKIE_SECURE=true` atrás de HTTPS.
+> **Somente desenvolvimento.** Em produção, defina `APP_SEED_DEMO=false`,
+> forneça credenciais fortes e exclusivas para o banco e usuários, configure
+> `APP_COOKIE_SECURE=true` atrás de HTTPS e restrinja as origens CORS. Não
+> publique um arquivo `.env` com segredos.
 
 ## Variáveis de ambiente
 
@@ -189,15 +258,32 @@ Senha padrão: `gestao123` (configurável por `APP_SEED_PASSWORD`).
 | `APP_COOKIE_SECURE`        | `false`                                       | Exige HTTPS nos cookies de sessão/CSRF     |
 | `APP_SEED_DEMO`            | `true`                                        | Cria usuários e catálogo de demonstração   |
 | `APP_SEED_PASSWORD`        | `gestao123`                                   | Senha inicial dos usuários de demonstração |
+| `POSTGRES_DB`              | `gestao`                                      | Nome do banco inicial (Compose)            |
+| `POSTGRES_USER`            | `gestao`                                      | Usuário do PostgreSQL (Compose)            |
+| `POSTGRES_PASSWORD`        | `gestao`                                      | Senha do PostgreSQL (Compose)              |
 | `POSTGRES_PORT`            | `5433`                                        | Porta do PostgreSQL no host (Compose)      |
+| `PORT`                     | `8443`                                        | Porta do Vite (`dev` e `preview`)          |
 | `VITE_API_BASE_URL`        | `http://localhost:8080/api/v1`                | URL da API usada pelo frontend             |
-| `GESTAO_TEST_DB_URL`       | —                                             | Banco externo para testes de integração    |
+| `GESTAO_TEST_DB_URL`       | —                                             | Banco externo isolado para testes de integração |
+| `GESTAO_TEST_DB_USERNAME`  | `gestao`                                      | Usuário desse banco de testes              |
+| `GESTAO_TEST_DB_PASSWORD`  | `gestao`                                      | Senha desse banco de testes                |
+
+`POSTGRES_*` são consumidas pelo Compose; `DB_*` e `APP_*` pela API; `PORT`
+pelo Vite; `VITE_API_BASE_URL` pelo frontend. `GESTAO_TEST_DB_*` são lidas
+pela suíte `ApiIntegrationTest` quando se escolhe um PostgreSQL externo.
 
 ## API
 
-Base: `/api/v1`. Todas as rotas, exceto `auth/csrf` e `auth/login`, exigem
-sessão autenticada. Operações de escrita exigem o token CSRF devolvido por
-`GET /auth/csrf` no header `X-XSRF-TOKEN`.
+Base: `/api/v1`. As rotas de autenticação `GET /auth/csrf` e
+`POST /auth/login` são públicas (assim como o Swagger/OpenAPI); as demais
+rotas de negócio exigem sessão autenticada. Operações de escrita, **inclusive
+login e logout**, exigem o token CSRF devolvido por `GET /auth/csrf`, enviado
+no header `X-XSRF-TOKEN`. O cliente `frontend/src/services/api.js` já gerencia
+o cookie de sessão, o token CSRF e o envio de credenciais.
+
+As listagens paginadas recebem, conforme o endpoint, `page`, `size`, `sort` e
+filtros. A maioria dos endpoints de negócio também aceita `storeId` (UUID) como
+query param; quando omitido, o backend resolve uma loja acessível ao usuário.
 
 ### Autenticação
 
@@ -218,7 +304,7 @@ sessão autenticada. Operações de escrita exigem o token CSRF devolvido por
 | `POST`   | `/products`             | Cria produto; `quantity` inicial gera entrada auditável                                           |
 | `PUT`    | `/products/{id}`        | Atualiza cadastro e `version` (lock otimista)                                                     |
 | `DELETE` | `/products/{id}`        | Arquiva produto, preservando histórico                                                            |
-| `GET`    | `/stock`                | Visão de estoque paginada e indicadores                                                           |
+| `GET`    | `/stock`                | Indicadores e produtos paginados do estoque                                                        |
 | `GET`    | `/stock/movements`      | Histórico completo com filtros e paginação                                                        |
 | `GET`    | `/stock/movements/{id}` | Detalhe da movimentação                                                                           |
 | `POST`   | `/stock/movements`      | Entrada, saída ou ajuste                                                                          |
@@ -241,21 +327,32 @@ sessão autenticada. Operações de escrita exigem o token CSRF devolvido por
 
 ### Painel, usuários e lojas
 
-| Método     | Rota           | Descrição                                      |
-| ---------- | -------------- | ---------------------------------------------- |
-| `GET`      | `/dashboard`   | Indicadores, tendência e últimas movimentações |
-| `GET/POST` | `/users`       | Usuários (ADMIN)                               |
-| `PUT`      | `/users/{id}`  | Atualização de usuário (ADMIN)                 |
-| `GET/POST` | `/stores`      | Lojas (ADMIN)                                  |
-| `GET/PUT`  | `/stores/{id}` | Detalhe e edição (ADMIN)                       |
+| Método     | Rota                      | Descrição                                             |
+| ---------- | ------------------------- | ----------------------------------------------------- |
+| `GET`      | `/dashboard`              | Indicadores e últimas movimentações                   |
+| `GET`      | `/dashboard/movements`    | Tendência de movimentações (`days`, padrão 7)         |
+| `GET`      | `/dashboard/low-stock`    | Produtos com baixo estoque (até 20)                   |
+| `GET`      | `/dashboard/out-of-stock` | Produtos sem estoque (até 20)                         |
+| `GET/POST` | `/users`                  | Listagem e cadastro de usuários (**ADMIN**)           |
+| `PUT`      | `/users/{id}`             | Atualização de usuário (**ADMIN**)                    |
+| `GET`      | `/stores`                 | Lojas acessíveis ao usuário autenticado               |
+| `GET`      | `/stores/{id}`            | Detalhe de loja acessível ao usuário autenticado      |
+| `POST`     | `/stores`                 | Cadastro de loja (**ADMIN**)                          |
+| `PUT`      | `/stores/{id}`            | Atualização de loja (**ADMIN**)                       |
 
 A maioria das rotas aceita `storeId`. O backend valida o vínculo do usuário
-com a loja em todas as consultas e mutações.
+com a loja em consultas e mutações, conforme o caso.
 
 ## Regras de negócio e segurança
 
-- **Multi-loja**: ADMIN acessa todas as lojas; GERENTE e OPERADOR acessam
+- **Multi-loja**: ADMIN acessa as lojas ativas; GERENTE e OPERADOR acessam
   apenas as lojas vinculadas. A validação ocorre no backend, não somente na UI.
+  A consulta de lojas acessíveis é permitida aos três perfis, mas o cadastro
+  e a edição de lojas exigem ADMIN.
+- **Permissões de escrita**: ADMIN/GERENTE podem cadastrar e alterar produtos,
+  clientes e vendas; ADMIN/GERENTE podem ajustar estoque; apenas ADMIN gerencia
+  usuários e lojas. OPERADOR pode consultar os dados de suas lojas e registrar
+  entradas/saídas de estoque, não ajustes.
 - **Estoque**: saldo e movimentação são gravados na mesma transação, com
   `@Version` no produto e rollback em caso de falha. Saídas nunca deixam saldo
   negativo.
@@ -267,8 +364,8 @@ com a loja em todas as consultas e mutações.
   apagados fisicamente. Como a unicidade de nome/SKU vale apenas entre produtos
   ativos, um item arquivado pode ser recadastrado com o mesmo nome.
 - **Auditoria**: movimentações guardam snapshot do nome do produto, SKU, loja,
-  usuário, motivo, observação e saldos anterior/posterior. Não há limite de
-  20 registros.
+  usuário, motivo, observação e saldos anterior/posterior. Há paginação no
+  histórico, não um limite fixo de 20 registros.
 - **Sessão**: cookie `GESTAO_SESSION` HttpOnly, SameSite=Lax; CSRF por cookie
   `XSRF-TOKEN` e header `X-XSRF-TOKEN`.
 - **Senhas**: BCrypt. Nenhum dado sensível é exposto nas respostas.
@@ -281,26 +378,38 @@ com a loja em todas as consultas e mutações.
 ```bash
 cd backend
 
-# Com Docker disponível, os testes de integração usam Testcontainers.
+# Executa testes unitários e de arquitetura; a integração usa Testcontainers
+# quando há Docker disponível.
 ./mvnw test
 
-# Alternativa local: banco PostgreSQL já existente (create database gestao_test).
+# Alternativa: PostgreSQL externo em um banco exclusivo para testes.
 ./mvnw test "-Dtest.db.url=jdbc:postgresql://localhost:5433/gestao_test"
 ```
 
 No PowerShell, use `.\mvnw.cmd` e mantenha a propriedade entre aspas.
+Para outro usuário/senha do banco de testes, defina
+`GESTAO_TEST_DB_USERNAME`/`GESTAO_TEST_DB_PASSWORD` ou passe
+`-Dtest.db.username=...` e `-Dtest.db.password=...`.
 
-A suíte cobre serviços (estoque, vendas, produtos, relatórios) e fluxo HTTP
-completo (autenticação, CSRF, isolamento entre lojas, paginação e validações).
+**Importante:** `ApiIntegrationTest` é condicionado à disponibilidade de um
+banco: se não houver Docker nem `GESTAO_TEST_DB_URL` (ou `-Dtest.db.url`),
+esses testes **são ignorados**. Verifique o resumo dos testes para confirmar
+que a integração realmente rodou. Os testes de integração gravam dados e
+aplicam as migrações Flyway; utilize apenas banco descartável ou isolado.
+
+A suíte inclui casos de uso de produtos, estoque, movimentações e vendas,
+restrições arquiteturais (ArchUnit) e cenários HTTP de autenticação, CSRF,
+isolamento entre lojas, paginação e validação.
 
 ### Frontend
 
 ```bash
 cd frontend
+pnpm install         # caso ainda não tenha instalado as dependências
 pnpm test            # Vitest + jsdom
 pnpm typecheck       # tsc --noEmit (tooling Vite)
 pnpm format:check    # oxfmt em src, scripts e configs do Vite/Vitest
-pnpm build
+pnpm build           # verifica a compilação de produção
 ```
 
 ## Migrações
@@ -321,10 +430,14 @@ aplicada nem use `ddl-auto=update`.
   build conjunto.
 - A atualização em tempo real (SSE/WebSocket) não foi implementada; cada
   operação refaz a consulta necessária.
+- Os botões **Exportar CSV** geram o arquivo a partir dos itens **da página
+  atual** da tabela; não há exportação completa de todas as páginas pelo backend.
 - O frontend usa criação segura de DOM (`textContent`/`createElement`) para
   dados vindos da API, evitando XSS.
-- Em ambientes com Docker via named pipe quebrado, o Testcontainers pode não
-  detectar o daemon; use `-Dtest.db.url` como alternativa.
+- Em ambientes com Docker indisponível, o Testcontainers pode não detectar
+  o daemon; use `-Dtest.db.url` como alternativa.
+- Antes de colocar o sistema em produção, revise as credenciais padrão,
+  habilite HTTPS, controle o CORS e configure backup/monitoramento do banco.
 
 ## Equipe
 
