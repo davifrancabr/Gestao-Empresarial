@@ -14,12 +14,12 @@ mais persistência de produtos ou movimentações em `localStorage`.
 
 ## Stack
 
-| Camada          | Tecnologias                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Camada          | Tecnologias                                                                                                                |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------|
 | Backend         | Java 21, Spring Boot 3.4.1, Spring Web, Data JPA/Hibernate, Security, Validation, Flyway, PostgreSQL 16, springdoc OpenAPI |
 | Testes backend  | JUnit 5, Mockito, Spring Boot Test, Testcontainers, ArchUnit                                                               |
 | Frontend        | HTML5, CSS puro, JavaScript ES Modules, Vite 8, pnpm                                                                       |
-| Testes frontend | Vitest + jsdom, TypeScript (verificação de configuração)                                                                    |
+| Testes frontend | Vitest + jsdom, TypeScript (verificação de configuração)                                                                   |
 
 ## Estrutura
 
@@ -61,8 +61,7 @@ Cada módulo de negócio do backend segue a Clean Architecture em quatro camadas
 (casos de uso, DTOs e portas para outros módulos), `infrastructure/`
 (persistência JPA e adaptadores) e `presentation/` (controllers e DTOs HTTP). As
 dependências apontam sempre para dentro e são verificadas por
-`ArchitectureTest` com ArchUnit. Para detalhes das decisões arquiteturais,
-consulte [`docs/REFATORACAO_CLEANARCHITECTURE.md`](docs/REFATORACAO_CLEANARCHITECTURE.md).
+`ArchitectureTest` com ArchUnit.
 
 ## Funcionalidades implementadas
 
@@ -81,8 +80,7 @@ consulte [`docs/REFATORACAO_CLEANARCHITECTURE.md`](docs/REFATORACAO_CLEANARCHITE
 ## Pré-requisitos
 
 - **JDK 21** (ou versão posterior compatível com o projeto);
-- o Maven Wrapper
-  (`backend/mvnw` ou `mvnw.cmd`) baixa o Maven na primeira execução, se necessário.
+- o Maven Wrapper (`backend/mvnw` ou `mvnw.cmd`) baixa o Maven na primeira execução, se necessário.
 - **Node.js 20.19+** (ou versão recente compatível com Vite 8) e **pnpm**.
 - **Docker com Compose** (recomendado para iniciar o PostgreSQL) **ou** uma
   instância PostgreSQL 16 acessível por JDBC.
@@ -109,8 +107,7 @@ O `.env` na raiz é lido pelo **Docker Compose**, mas **não é carregado
 automaticamente pelo Spring Boot**: as variáveis `DB_*` devem ser fornecidas
 na sessão do terminal, pela IDE ou pelo ambiente de execução da API.
 
-Para usar um PostgreSQL local nos testes de integração, crie um banco
-**separado** (com os valores padrão do Compose):
+Para usar um PostgreSQL local nos testes de integração, crie um banco **separado** (com os valores padrão do Compose):
 
 ```bash
 docker exec gestao-postgres createdb -U gestao gestao_test
@@ -151,8 +148,7 @@ extrair o ZIP, rode `chmod +x backend/mvnw` a partir da raiz do repositório
 antes de iniciá-lo.
 
 A API sobe em `http://localhost:8080`. O Flyway aplica as migrações
-automaticamente na inicialização e o Hibernate apenas valida o schema
-(`ddl-auto=validate`).
+automaticamente na inicialização e o Hibernate apenas valida o schema (`ddl-auto=validate`).
 
 Também é possível empacotar e executar o JAR (mantendo as variáveis de
 ambiente definidas, pois o padrão de `DB_URL` usa a porta 5432):
@@ -210,14 +206,14 @@ não implanta nem inicia o backend.
 
 ### 4. Problemas comuns
 
-| Mensagem                                                        | Causa                                                                 | Correção                                                                 |
-| --------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `Connection to localhost:5433 refused`                          | PostgreSQL parado ou container removido                               | `docker compose up -d` e confirme com `docker compose ps`                |
-| `Connection to localhost:5432 refused` ao subir o backend       | Padrão de `DB_URL` usa a porta 5432, mas o Compose expõe a 5433        | Defina `DB_URL=jdbc:postgresql://localhost:5433/gestao` antes de iniciar |
-| Frontend sem dados e erro de rede no console                    | API não está rodando em `http://localhost:8080`                       | Suba o backend (seção 2); o padrão do frontend já aponta para essa URL   |
+| Mensagem                                                        | Causa                                                                          | Correção                                                                             |
+|-----------------------------------------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| `Connection to localhost:5433 refused`                          | PostgreSQL parado ou container removido                                        | `docker compose up -d` e confirme com `docker compose ps`                            |
+| `Connection to localhost:5432 refused` ao subir o backend       | Padrão de `DB_URL` usa a porta 5432, mas o Compose expõe a 5433                | Defina `DB_URL=jdbc:postgresql://localhost:5433/gestao` antes de iniciar             |
+| Frontend sem dados e erro de rede no console                    | API não está rodando em `http://localhost:8080`                                | Suba o backend (seção 2); o padrão do frontend já aponta para essa URL               |
 | `E-mail ou senha inválidos` para as credenciais de demonstração | `APP_SEED_DEMO=false`, `APP_SEED_PASSWORD` diferente ou usuários já existentes | Confira a configuração e consulte os usuários; o seed só atua quando não há usuários |
-| Erro de CORS ou cookie/sessão não persistido                    | Frontend mudou de host/porta sem atualizar CORS ou hosts incompatíveis | Ajuste `APP_CORS_ALLOWED_ORIGINS`, reinicie a API e mantenha os hosts consistentes |
-| Testes de integração não foram executados                      | Sem Docker e sem `GESTAO_TEST_DB_URL`/`-Dtest.db.url`                   | Configure um banco de testes isolado ou habilite o Docker               |
+| Erro de CORS ou cookie/sessão não persistido                    | Frontend mudou de host/porta sem atualizar CORS ou hosts incompatíveis         | Ajuste `APP_CORS_ALLOWED_ORIGINS`, reinicie a API e mantenha os hosts consistentes   |
+| Testes de integração não foram executados                       | Sem Docker e sem `GESTAO_TEST_DB_URL`/`-Dtest.db.url`                          | Configure um banco de testes isolado ou habilite o Docker                            |
 
 O backend mantém o pool de conexões ativo: se o PostgreSQL cair e voltar na
 mesma porta, as requisições seguintes se reconectam sem reiniciar a API. Se o
@@ -230,7 +226,7 @@ Criadas por `DemoDataSeeder` quando `APP_SEED_DEMO=true` **e a tabela de
 usuários está vazia**:
 
 | E-mail                  | Perfil   | Lojas           |
-| ----------------------- | -------- | --------------- |
+|-------------------------|----------|-----------------|
 | `admin@gestao.local`    | ADMIN    | todas           |
 | `gerente@gestao.local`  | GERENTE  | Loja 1 - Matriz |
 | `operador@gestao.local` | OPERADOR | Loja 1 - Matriz |
@@ -246,27 +242,27 @@ suas senhas persistidas.
 
 ## Variáveis de ambiente
 
-| Variável                   | Padrão                                        | Descrição                                  |
-| -------------------------- | --------------------------------------------- | ------------------------------------------ |
-| `DB_URL`                   | `jdbc:postgresql://localhost:5432/gestao`     | JDBC do PostgreSQL                         |
-| `DB_USERNAME`              | `gestao`                                      | Usuário do banco                           |
-| `DB_PASSWORD`              | `gestao`                                      | Senha do banco                             |
-| `DB_POOL_SIZE`             | `10`                                          | Conexões do HikariCP                       |
-| `APP_PORT`                 | `8080`                                        | Porta da API                               |
-| `APP_SESSION_TIMEOUT`      | `8h`                                          | Expiração da sessão                        |
-| `APP_CORS_ALLOWED_ORIGINS` | `http://localhost:8443,http://127.0.0.1:8443` | Origens liberadas (separadas por vírgula)  |
-| `APP_COOKIE_SECURE`        | `false`                                       | Exige HTTPS nos cookies de sessão/CSRF     |
-| `APP_SEED_DEMO`            | `true`                                        | Cria usuários e catálogo de demonstração   |
-| `APP_SEED_PASSWORD`        | `gestao123`                                   | Senha inicial dos usuários de demonstração |
-| `POSTGRES_DB`              | `gestao`                                      | Nome do banco inicial (Compose)            |
-| `POSTGRES_USER`            | `gestao`                                      | Usuário do PostgreSQL (Compose)            |
-| `POSTGRES_PASSWORD`        | `gestao`                                      | Senha do PostgreSQL (Compose)              |
-| `POSTGRES_PORT`            | `5433`                                        | Porta do PostgreSQL no host (Compose)      |
-| `PORT`                     | `8443`                                        | Porta do Vite (`dev` e `preview`)          |
-| `VITE_API_BASE_URL`        | `http://localhost:8080/api/v1`                | URL da API usada pelo frontend             |
+| Variável                   | Padrão                                        | Descrição                                       |
+|----------------------------|-----------------------------------------------|-------------------------------------------------|
+| `DB_URL`                   | `jdbc:postgresql://localhost:5432/gestao`     | JDBC do PostgreSQL                              |
+| `DB_USERNAME`              | `gestao`                                      | Usuário do banco                                |
+| `DB_PASSWORD`              | `gestao`                                      | Senha do banco                                  |
+| `DB_POOL_SIZE`             | `10`                                          | Conexões do HikariCP                            |
+| `APP_PORT`                 | `8080`                                        | Porta da API                                    |
+| `APP_SESSION_TIMEOUT`      | `8h`                                          | Expiração da sessão                             |
+| `APP_CORS_ALLOWED_ORIGINS` | `http://localhost:8443,http://127.0.0.1:8443` | Origens liberadas (separadas por vírgula)       |
+| `APP_COOKIE_SECURE`        | `false`                                       | Exige HTTPS nos cookies de sessão/CSRF          |
+| `APP_SEED_DEMO`            | `true`                                        | Cria usuários e catálogo de demonstração        |
+| `APP_SEED_PASSWORD`        | `gestao123`                                   | Senha inicial dos usuários de demonstração      |
+| `POSTGRES_DB`              | `gestao`                                      | Nome do banco inicial (Compose)                 |
+| `POSTGRES_USER`            | `gestao`                                      | Usuário do PostgreSQL (Compose)                 |
+| `POSTGRES_PASSWORD`        | `gestao`                                      | Senha do PostgreSQL (Compose)                   |
+| `POSTGRES_PORT`            | `5433`                                        | Porta do PostgreSQL no host (Compose)           |
+| `PORT`                     | `8443`                                        | Porta do Vite (`dev` e `preview`)               |
+| `VITE_API_BASE_URL`        | `http://localhost:8080/api/v1`                | URL da API usada pelo frontend                  |
 | `GESTAO_TEST_DB_URL`       | —                                             | Banco externo isolado para testes de integração |
-| `GESTAO_TEST_DB_USERNAME`  | `gestao`                                      | Usuário desse banco de testes              |
-| `GESTAO_TEST_DB_PASSWORD`  | `gestao`                                      | Senha desse banco de testes                |
+| `GESTAO_TEST_DB_USERNAME`  | `gestao`                                      | Usuário desse banco de testes                   |
+| `GESTAO_TEST_DB_PASSWORD`  | `gestao`                                      | Senha desse banco de testes                     |
 
 `POSTGRES_*` são consumidas pelo Compose; `DB_*` e `APP_*` pela API; `PORT`
 pelo Vite; `VITE_API_BASE_URL` pelo frontend. `GESTAO_TEST_DB_*` são lidas
@@ -288,7 +284,7 @@ query param; quando omitido, o backend resolve uma loja acessível ao usuário.
 ### Autenticação
 
 | Método | Rota           | Descrição                                  |
-| ------ | -------------- | ------------------------------------------ |
+|--------|----------------|--------------------------------------------|
 | `GET`  | `/auth/csrf`   | Devolve `headerName` e `token`             |
 | `POST` | `/auth/login`  | Cria a sessão (`GESTAO_SESSION`, HttpOnly) |
 | `GET`  | `/auth/me`     | Sessão atual, perfil e lojas vinculadas    |
@@ -297,14 +293,14 @@ query param; quando omitido, o backend resolve uma loja acessível ao usuário.
 ### Produtos, estoque e movimentações
 
 | Método   | Rota                    | Descrição                                                                                         |
-| -------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
+|----------|-------------------------|---------------------------------------------------------------------------------------------------|
 | `GET`    | `/products`             | Lista paginada; filtros `search`, `category`, `status`, `sort`, `page`, `size`, `includeInactive` |
 | `GET`    | `/products/categories`  | Categorias da loja                                                                                |
 | `GET`    | `/products/{id}`        | Detalhe                                                                                           |
 | `POST`   | `/products`             | Cria produto; `quantity` inicial gera entrada auditável                                           |
 | `PUT`    | `/products/{id}`        | Atualiza cadastro e `version` (lock otimista)                                                     |
 | `DELETE` | `/products/{id}`        | Arquiva produto, preservando histórico                                                            |
-| `GET`    | `/stock`                | Indicadores e produtos paginados do estoque                                                        |
+| `GET`    | `/stock`                | Indicadores e produtos paginados do estoque                                                       |
 | `GET`    | `/stock/movements`      | Histórico completo com filtros e paginação                                                        |
 | `GET`    | `/stock/movements/{id}` | Detalhe da movimentação                                                                           |
 | `POST`   | `/stock/movements`      | Entrada, saída ou ajuste                                                                          |
@@ -312,7 +308,7 @@ query param; quando omitido, o backend resolve uma loja acessível ao usuário.
 ### Clientes, vendas e relatórios
 
 | Método           | Rota                        | Descrição                      |
-| ---------------- | --------------------------- | ------------------------------ |
+|------------------|-----------------------------|--------------------------------|
 | `GET/POST`       | `/customers`                | Lista e cadastro de clientes   |
 | `GET/PUT/DELETE` | `/customers/{id}`           | Detalhe, edição e arquivamento |
 | `GET`            | `/customers/{id}/purchases` | Compras do cliente             |
@@ -327,18 +323,18 @@ query param; quando omitido, o backend resolve uma loja acessível ao usuário.
 
 ### Painel, usuários e lojas
 
-| Método     | Rota                      | Descrição                                             |
-| ---------- | ------------------------- | ----------------------------------------------------- |
-| `GET`      | `/dashboard`              | Indicadores e últimas movimentações                   |
-| `GET`      | `/dashboard/movements`    | Tendência de movimentações (`days`, padrão 7)         |
-| `GET`      | `/dashboard/low-stock`    | Produtos com baixo estoque (até 20)                   |
-| `GET`      | `/dashboard/out-of-stock` | Produtos sem estoque (até 20)                         |
-| `GET/POST` | `/users`                  | Listagem e cadastro de usuários (**ADMIN**)           |
-| `PUT`      | `/users/{id}`             | Atualização de usuário (**ADMIN**)                    |
-| `GET`      | `/stores`                 | Lojas acessíveis ao usuário autenticado               |
-| `GET`      | `/stores/{id}`            | Detalhe de loja acessível ao usuário autenticado      |
-| `POST`     | `/stores`                 | Cadastro de loja (**ADMIN**)                          |
-| `PUT`      | `/stores/{id}`            | Atualização de loja (**ADMIN**)                       |
+| Método     | Rota                      | Descrição                                        |
+|------------|---------------------------|--------------------------------------------------|
+| `GET`      | `/dashboard`              | Indicadores e últimas movimentações              |
+| `GET`      | `/dashboard/movements`    | Tendência de movimentações (`days`, padrão 7)    |
+| `GET`      | `/dashboard/low-stock`    | Produtos com baixo estoque (até 20)              |
+| `GET`      | `/dashboard/out-of-stock` | Produtos sem estoque (até 20)                    |
+| `GET/POST` | `/users`                  | Listagem e cadastro de usuários (**ADMIN**)      |
+| `PUT`      | `/users/{id}`             | Atualização de usuário (**ADMIN**)               |
+| `GET`      | `/stores`                 | Lojas acessíveis ao usuário autenticado          |
+| `GET`      | `/stores/{id}`            | Detalhe de loja acessível ao usuário autenticado |
+| `POST`     | `/stores`                 | Cadastro de loja (**ADMIN**)                     |
+| `PUT`      | `/stores/{id}`            | Atualização de loja (**ADMIN**)                  |
 
 A maioria das rotas aceita `storeId`. O backend valida o vínculo do usuário
 com a loja em consultas e mutações, conforme o caso.
@@ -415,7 +411,7 @@ pnpm build           # verifica a compilação de produção
 ## Migrações
 
 | Versão                              | Conteúdo                                                                     |
-| ----------------------------------- | ---------------------------------------------------------------------------- |
+|-------------------------------------|------------------------------------------------------------------------------|
 | `V1__schema_inicial.sql`            | Lojas, usuários, vínculos, produtos, movimentações, clientes, vendas e itens |
 | `V2__lojas_iniciais.sql`            | Duas lojas de demonstração                                                   |
 | `V3__unicidade_produtos_ativos.sql` | Nome/SKU únicos apenas entre produtos ativos                                 |
@@ -442,7 +438,7 @@ aplicada nem use `ddl-auto=update`.
 ## Equipe
 
 | Nome                              | Matrícula |
-| --------------------------------- | --------- |
+|-----------------------------------|-----------|
 | Lívia da Silva Teixeira de Barros | 2653161   |
 | Davi Cavalcante França            | 2671244   |
 | Tayna Santos Santana Gonzáles     | 2636576   |
