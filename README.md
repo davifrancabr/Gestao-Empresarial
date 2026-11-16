@@ -50,7 +50,9 @@ mais persistência de produtos ou movimentações em `localStorage`.
 │   ├── src/services/      # cliente HTTP central (api.js)
 │   ├── src/modules/       # painel, produtos, estoque, movimentações, etc.
 │   ├── src/components/    # modais, notificações, paginação e estados
-│   └── src/utils/         # DOM seguro, formatadores e validações
+│   ├── src/utils/         # DOM seguro, formatadores e validações
+│   ├── scripts/           # formatador oxfmt (format.mjs)
+│   └── .figma/            # arquivos gerados pelo Figma Make (não editar)
 ├── docs/                  # documentos acadêmicos
 ├── docker-compose.yml     # PostgreSQL
 ├── .env.example           # variáveis do banco e da API
@@ -76,12 +78,15 @@ dependências apontam sempre para dentro e são verificadas por
   atualmente carregada**, não de todos os resultados paginados.
 - **Acesso:** autenticação por sessão, perfis ADMIN/GERENTE/OPERADOR e autorização
   por loja aplicada no backend.
+- **Configurações:** gestão de usuários e lojas (ADMIN) e preferências de
+  interface (contraste e redução de movimento).
 
 ## Pré-requisitos
 
 - **JDK 21** (ou versão posterior compatível com o projeto);
 - o Maven Wrapper (`backend/mvnw` ou `mvnw.cmd`) baixa o Maven na primeira execução, se necessário.
-- **Node.js 20.19+** (ou versão recente compatível com Vite 8) e **pnpm**.
+- **Node.js 20.19+** (ou versão recente compatível com Vite 8) e **pnpm**. O
+  toolchain recomendado está em `frontend/.mise.toml` (Node 22 e pnpm 10.34.3).
 - **Docker com Compose** (recomendado para iniciar o PostgreSQL) **ou** uma
   instância PostgreSQL 16 acessível por JDBC.
 
@@ -213,7 +218,7 @@ não implanta nem inicia o backend.
 | Frontend sem dados e erro de rede no console                    | API não está rodando em `http://localhost:8080`                                | Suba o backend (seção 2); o padrão do frontend já aponta para essa URL               |
 | `E-mail ou senha inválidos` para as credenciais de demonstração | `APP_SEED_DEMO=false`, `APP_SEED_PASSWORD` diferente ou usuários já existentes | Confira a configuração e consulte os usuários; o seed só atua quando não há usuários |
 | Erro de CORS ou cookie/sessão não persistido                    | Frontend mudou de host/porta sem atualizar CORS ou hosts incompatíveis         | Ajuste `APP_CORS_ALLOWED_ORIGINS`, reinicie a API e mantenha os hosts consistentes   |
-| Testes de integração não foram executados                       | Sem Docker e sem `GESTAO_TEST_DB_URL`/`-Dtest.db.url`                          | Configure um banco de testes isolado ou habilite o Docker                            |
+| Testes de integração não foram executados                       | Docker ausente/incompatível e sem `GESTAO_TEST_DB_URL`/`-Dtest.db.url`         | Configure um banco de testes isolado, atualize o Docker ou use `-Dtest.db.url`       |
 
 O backend mantém o pool de conexões ativo: se o PostgreSQL cair e voltar na
 mesma porta, as requisições seguintes se reconectam sem reiniciar a API. Se o
@@ -375,8 +380,11 @@ com a loja em consultas e mutações, conforme o caso.
 cd backend
 
 # Executa testes unitários e de arquitetura; a integração usa Testcontainers
-# quando há Docker disponível.
+# quando há Docker compatível disponível.
 ./mvnw test
+
+# Uma classe específica (unitária ou de integração).
+./mvnw test -Dtest=ProductTest
 
 # Alternativa: PostgreSQL externo em um banco exclusivo para testes.
 ./mvnw test "-Dtest.db.url=jdbc:postgresql://localhost:5433/gestao_test"
@@ -388,10 +396,13 @@ Para outro usuário/senha do banco de testes, defina
 `-Dtest.db.username=...` e `-Dtest.db.password=...`.
 
 **Importante:** `ApiIntegrationTest` é condicionado à disponibilidade de um
-banco: se não houver Docker nem `GESTAO_TEST_DB_URL` (ou `-Dtest.db.url`),
-esses testes **são ignorados**. Verifique o resumo dos testes para confirmar
-que a integração realmente rodou. Os testes de integração gravam dados e
-aplicam as migrações Flyway; utilize apenas banco descartável ou isolado.
+banco: se não houver Docker compatível com o Testcontainers nem
+`GESTAO_TEST_DB_URL` (ou `-Dtest.db.url`), esses testes **são ignorados**, o que
+também pode ocorrer com um Docker instalado mas com API antiga/incompatível.
+Verifique o resumo dos testes para confirmar que a integração realmente rodou.
+Os testes de integração dependem da carga de demonstração (lojas da V2 e do
+`DemoDataSeeder`), então mantenha `APP_SEED_DEMO=true` e utilize apenas banco
+vazio, descartável ou isolado — eles gravam dados e aplicam as migrações Flyway.
 
 A suíte inclui casos de uso de produtos, estoque, movimentações e vendas,
 restrições arquiteturais (ArchUnit) e cenários HTTP de autenticação, CSRF,
@@ -401,12 +412,18 @@ isolamento entre lojas, paginação e validação.
 
 ```bash
 cd frontend
-pnpm install         # caso ainda não tenha instalado as dependências
-pnpm test            # Vitest + jsdom
-pnpm typecheck       # tsc --noEmit (tooling Vite)
-pnpm format:check    # oxfmt em src, scripts e configs do Vite/Vitest
-pnpm build           # verifica a compilação de produção
+pnpm install           # caso ainda não tenha instalado as dependências
+pnpm test              # Vitest + jsdom (todos os testes)
+pnpm test products     # filtra arquivos/testes pelo nome
+pnpm test:watch        # reexecuta em modo watch
+pnpm typecheck         # tsc --noEmit (configs/declarações; não checa os .js)
+pnpm format:check      # oxfmt em src, scripts e configs do Vite/Vitest
+pnpm format            # corrige a formatação com oxfmt
+pnpm build             # verifica a compilação de produção
 ```
+
+Não há pipeline de CI no repositório; execute essas verificações localmente
+antes de concluir uma alteração.
 
 ## Migrações
 
@@ -430,8 +447,8 @@ aplicada nem use `ddl-auto=update`.
   atual** da tabela; não há exportação completa de todas as páginas pelo backend.
 - O frontend usa criação segura de DOM (`textContent`/`createElement`) para
   dados vindos da API, evitando XSS.
-- Em ambientes com Docker indisponível, o Testcontainers pode não detectar
-  o daemon; use `-Dtest.db.url` como alternativa.
+- Em ambientes com Docker indisponível ou com cliente/API incompatível, o
+  Testcontainers pode não detectar o daemon; use `-Dtest.db.url` como alternativa.
 - Antes de colocar o sistema em produção, revise as credenciais padrão,
   habilite HTTPS, controle o CORS e configure backup/monitoramento do banco.
 
